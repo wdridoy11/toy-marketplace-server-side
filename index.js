@@ -29,7 +29,13 @@ async function run() {
       .db("toyMarketplaceDB")
       .collection("toyMarketplaces");
 
-    // toy post
+    // toy data get
+    app.get("/toyMarketplace", async (req, res) => {
+      const result = await toyMarketplaceCollection.find().toArray();
+      res.send(result);
+    });
+
+    // toy data post
     app.post("/toyMarketplace", async (req, res) => {
       const body = req.body;
       const result = await toyMarketplaceCollection.insertOne(body);
