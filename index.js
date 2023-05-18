@@ -9,6 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { config } = require("dotenv");
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.v2v9b72.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -32,6 +33,17 @@ async function run() {
     // toy data get
     app.get("/toyMarketplace", async (req, res) => {
       const result = await toyMarketplaceCollection.find().toArray();
+      res.send(result);
+    });
+
+    //specific user specific data
+    app.get("/mytoyMarketplace", async (req, res) => {
+      console.log(req.query.email);
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query.email };
+      }
+      const result = await toyMarketplaceCollection.find(query).toArray();
       res.send(result);
     });
 
