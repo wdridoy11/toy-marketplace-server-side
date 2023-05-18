@@ -42,16 +42,30 @@ async function run() {
       res.send(result);
     });
 
+    // Toy find specific data using id
+    app.get("/toyMarketplace/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await toyMarketplaceCollection.findOne(filter);
+      res.send(result);
+    });
+
     // toy data update
-    app.put("/update_toy/:id", async (req, res) => {
+    app.put("/toyMarketplace/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const body = req.body;
       const updateDoc = {
         $set: {
+          name: body.name,
+          pictureUrl: body.pictureUrl,
+          sellerName: body.sellerName,
+          sellerEmail: body.sellerEmail,
           price: body.price,
           quantity: body.quantity,
           description: body.description,
+          selectedValue: body.selectedValue,
+          reatingValue: body.reatingValue,
         },
       };
       const result = await toyMarketplaceCollection.updateOne(
@@ -60,6 +74,15 @@ async function run() {
       );
       res.send(result);
     });
+
+    // toy data delete
+    app.delete("/toyMarketplace/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await toyMarketplaceCollection.deleteOne(filter);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
