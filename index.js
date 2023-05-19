@@ -31,9 +31,26 @@ async function run() {
       .collection("toyMarketplaces");
 
     // toy data get
-    app.get("/toyMarketplace", async (req, res) => {
+    app.get("/toys", async (req, res) => {
       const result = await toyMarketplaceCollection.find().toArray();
       res.send(result);
+    });
+
+    // sorting by price
+    app.get("/myToys/:text", async (req, res) => {
+      if (req.params.text == "Ascending") {
+        const result = await toyMarketplaceCollection
+          .find({})
+          .sort({ price: 1 })
+          .toArray();
+        return res.send(result);
+      } else if (req.params.text == "Descending") {
+        const result = await toyMarketplaceCollection
+          .find({})
+          .sort({ price: -1 })
+          .toArray();
+        return res.send(result);
+      }
     });
 
     //specific user specific data
