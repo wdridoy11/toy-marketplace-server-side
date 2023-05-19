@@ -38,7 +38,6 @@ async function run() {
 
     //specific user specific data
     app.get("/mytoyMarketplace", async (req, res) => {
-      console.log(req.query.email);
       let query = {};
       if (req.query?.email) {
         query = { email: req.query.email };
@@ -69,15 +68,15 @@ async function run() {
       const body = req.body;
       const updateDoc = {
         $set: {
-          name: body.name,
-          pictureUrl: body.pictureUrl,
-          sellerName: body.sellerName,
-          sellerEmail: body.sellerEmail,
+          toy_name: body.toy_name,
+          picture_url: body.picture_url,
+          seller_name: body.seller_name,
+          email: body.email,
           price: body.price,
           quantity: body.quantity,
           description: body.description,
-          selectedValue: body.selectedValue,
-          reatingValue: body.reatingValue,
+          categoryValue: body.categoryValue,
+          toyRating: body.toyRating,
         },
       };
       const result = await toyMarketplaceCollection.updateOne(
