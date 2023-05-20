@@ -30,14 +30,27 @@ async function run() {
       .db("toyMarketplaceDB")
       .collection("toyMarketplaces");
 
-    // toy data get
+    // toys get data
     app.get("/toys", async (req, res) => {
-      const result = await toyMarketplaceCollection.find().toArray();
+      const page = parseInt(req.query.page) || 0;
+      const limit = parseInt(req.query.limit) || 20;
+      const skip = page * limit;
+      const result = await toyMarketplaceCollection
+        .find()
+        .skip(skip)
+        .limit(limit)
+        .toArray();
       res.send(result);
     });
 
+    // total toys count
+    app.get("/totalToys", async (req, res) => {
+      const result = await toyMarketplaceCollection.estimatedDocumentCount();
+      res.send({ totalToys: result });
+    });
+
     // filter data using category
-    app.get("/category/:text", async (req, res) => {
+    app.get("/categorys/:text", async (req, res) => {
       let category = req.params.text;
       const result = await toyMarketplaceCollection
         .find({ categoryValue: category })
@@ -62,8 +75,8 @@ async function run() {
       }
     });
 
-    //specific user specific data
-    app.get("/mytoyMarketplace", async (req, res) => {
+    //specific user specific data using email
+    app.get("/myToys", async (req, res) => {
       let query = {};
       if (req.query?.email) {
         query = { email: req.query.email };
@@ -72,15 +85,15 @@ async function run() {
       res.send(result);
     });
 
-    // toy data post
-    app.post("/toyMarketplace", async (req, res) => {
+    // toys data post
+    app.post("/toys", async (req, res) => {
       const body = req.body;
       const result = await toyMarketplaceCollection.insertOne(body);
       res.send(result);
     });
 
     // Toy find specific data using id
-    app.get("/toyMarketplace/:id", async (req, res) => {
+    app.get("/toys/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const result = await toyMarketplaceCollection.findOne(filter);
@@ -88,7 +101,7 @@ async function run() {
     });
 
     // toy data update
-    app.put("/toyMarketplace/:id", async (req, res) => {
+    app.put("/toys/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const body = req.body;
@@ -113,7 +126,7 @@ async function run() {
     });
 
     // toy name search
-    app.get("/toySearchByName/:searchText", async (req, res) => {
+    app.get("/toys/:searchText", async (req, res) => {
       const searchText = req.params.searchText;
       const result = await toyMarketplaceCollection
         .find({
@@ -124,7 +137,7 @@ async function run() {
     });
 
     // toy data delete
-    app.delete("/toyMarketplace/:id", async (req, res) => {
+    app.delete("/toys/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const result = await toyMarketplaceCollection.deleteOne(filter);
