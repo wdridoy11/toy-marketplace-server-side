@@ -59,20 +59,21 @@ async function run() {
     });
 
     // sorting by price
-    app.get("/myToys/:text", async (req, res) => {
-      if (req.params.text == "Ascending") {
-        const result = await toyMarketplaceCollection
-          .find({})
+    app.get("/myToys/:order", async (req, res) => {
+      let result;
+      if (req.params.order == "Ascending") {
+        result = await toyMarketplaceCollection
+          .find()
           .sort({ price: 1 })
           .toArray();
-        return res.send(result);
-      } else if (req.params.text == "Descending") {
-        const result = await toyMarketplaceCollection
-          .find({})
+      } else if (req.params.order == "Descending") {
+        result = await toyMarketplaceCollection
+          .find()
           .sort({ price: -1 })
           .toArray();
-        return res.send(result);
       }
+      res.send(result);
+      console.log(result);
     });
 
     //specific user specific data using email
@@ -88,7 +89,10 @@ async function run() {
     // toys data post
     app.post("/toys", async (req, res) => {
       const body = req.body;
-      const result = await toyMarketplaceCollection.insertOne(body);
+      const result = await toyMarketplaceCollection.insertOne({
+        ...body,
+        price: Number(body.price),
+      });
       res.send(result);
     });
 
@@ -107,15 +111,9 @@ async function run() {
       const body = req.body;
       const updateDoc = {
         $set: {
-          toy_name: body.toy_name,
-          picture_url: body.picture_url,
-          seller_name: body.seller_name,
-          email: body.email,
           price: body.price,
           quantity: body.quantity,
           description: body.description,
-          categoryValue: body.categoryValue,
-          toyRating: body.toyRating,
         },
       };
       const result = await toyMarketplaceCollection.updateOne(
@@ -126,7 +124,7 @@ async function run() {
     });
 
     // toy name search
-    app.get("/toys/:searchText", async (req, res) => {
+    app.get("/searyToys/:searchText", async (req, res) => {
       const searchText = req.params.searchText;
       const result = await toyMarketplaceCollection
         .find({
