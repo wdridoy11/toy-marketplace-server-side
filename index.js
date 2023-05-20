@@ -36,6 +36,15 @@ async function run() {
       res.send(result);
     });
 
+    // filter data using category
+    app.get("/category/:text", async (req, res) => {
+      let category = req.params.text;
+      const result = await toyMarketplaceCollection
+        .find({ categoryValue: category })
+        .toArray();
+      res.send(result);
+    });
+
     // sorting by price
     app.get("/myToys/:text", async (req, res) => {
       if (req.params.text == "Ascending") {
