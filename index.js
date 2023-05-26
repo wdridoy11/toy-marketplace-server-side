@@ -31,7 +31,7 @@ async function run() {
       .db("toyMarketplaceDB")
       .collection("toyMarketplaces");
 
-    // toys get data
+    // get toys data
     app.get("/toys", async (req, res) => {
       const page = parseInt(req.query.page) || 0;
       const limit = parseInt(req.query.limit) || 20;
@@ -59,7 +59,7 @@ async function run() {
       res.send(result);
     });
 
-    // sorting by price
+    // sorting by price 
     app.get("/myToys/:order", async (req, res) => {
       let result;
       if (req.params.order == "Ascending") {
