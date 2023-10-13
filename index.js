@@ -27,9 +27,8 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     client.connect();
 
-    const toyMarketplaceCollection = client
-      .db("toyMarketplaceDB")
-      .collection("toyMarketplaces");
+    const toyMarketplaceCollection = client.db("toyMarketplaceDB").collection("toyMarketplaces");
+    const blogCollection = client.db("toyMarketplaceDB").collection("blogs")
 
     // get toys data
     app.get("/toys", async (req, res) => {
@@ -134,6 +133,22 @@ async function run() {
       res.send(result);
     });
 
+
+    // blog get apis
+    app.get("/blogs",async(req,res)=>{
+      const result = await blogCollection.find().toArray();
+      res.send(result)
+    })
+
+    app.get('/blogs/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)};
+      const result = await blogCollection.findOne(query)
+      res.send(result)
+    })
+
+    // Toy find specific data using id
+  
     // toy data delete
     app.delete("/toys/:id", async (req, res) => {
       const id = req.params.id;
