@@ -147,8 +147,6 @@ async function run() {
       res.send(result)
     })
 
-    // Toy find specific data using id
-  
     // toy data delete
     app.delete("/toys/:id", async (req, res) => {
       const id = req.params.id;
